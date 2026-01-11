@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Caption Encryption</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Image Caption Encryption &amp; Metadata Steganography</h1>
+      <p>Hide encrypted captions inside image metadata using classical ciphers.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <section class="card">
+      <h2>Upload Image &amp; Configure</h2>
+      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data" class="form-grid">
+        <div class="form-group full-width">
+          <label for="image">Image File (JPEG only)</label>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept=".jpg,.jpeg,image/jpeg"
+            required
+          />
+          <small>Only .jpg / .jpeg images are supported for metadata steganography.</small>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="labels">Caption Labels (comma-separated)</label>
+          <input type="text" id="labels" name="labels" placeholder="tree, car, building" />
+          <small>Used to auto-generate a simple caption.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="hill_key">Hill Cipher Key (2x2 matrix)</label>
+          <input type="text" id="hill_key" name="hill_key" value="[[3, 3], [2, 5]]" required />
+          <small>Format: [[a, b], [c, d]]</small>
+        </div>
+
+        <div class="form-group">
+          <label for="vigenere_key">Vigenère Cipher Key</label>
+          <input type="text" id="vigenere_key" name="vigenere_key" value="SECRET" required />
+        </div>
+
+        <div class="form-group full-width">
+          <label for="output_name">Output File Name</label>
+          <input type="text" id="output_name" name="output_name" value="encrypted_image.jpg" />
+        </div>
+
+        <div class="form-actions full-width">
+          <button type="submit" class="btn-primary">Encrypt &amp; Save to Metadata</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card info-card">
+      <h2>How It Works</h2>
+      <ol>
+        <li>Upload an image and enter caption labels.</li>
+        <li>The app generates a caption and encrypts it (Hill → Vigenère).</li>
+        <li>The encrypted caption is stored in the image's EXIF comment field.</li>
+        <li>You get a new image file plus a verification report.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>Project: Image Caption Encryption &amp; Metadata Steganography Using Classical Ciphers</small>
+    </div>
+  </footer>
+</body>
+</html>

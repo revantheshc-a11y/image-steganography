@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Result - Image Caption Encryption</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Encryption Result</h1>
+      <p>Verification of metadata steganography.</p>
+    </div>
+  </header>
+
+  <main class="container result-layout">
+    <section class="card">
+      <h2>Files</h2>
+      <p><strong>Original file:</strong> {{ original_filename }}</p>
+      <p><strong>Modified file:</strong> {{ output_filename }}</p>
+      <p>
+        <a href="{{ url_for('download_file', filename=output_filename) }}" class="btn-secondary">Download Modified Image</a>
+        <a href="{{ url_for('index') }}" class="btn-link">&#8592; Back to Home</a>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Captions</h2>
+      <p><strong>Generated caption:</strong></p>
+      <pre class="code-block">{{ caption }}</pre>
+
+      <p><strong>Encrypted caption (before writing):</strong></p>
+      <pre class="code-block">{{ encrypted_caption }}</pre>
+
+      <p><strong>Encrypted caption (read from metadata):</strong></p>
+      <pre class="code-block">{{ encrypted_from_meta }}</pre>
+
+      <p><strong>Decrypted caption:</strong></p>
+      <pre class="code-block">{{ decrypted_caption }}</pre>
+
+      <p class="match-status">
+        {% if is_match %}
+          <span class="match-yes">✓ Decrypted caption matches the original.</span>
+        {% else %}
+          <span class="match-no">✗ Decrypted caption does not match the original.</span>
+        {% endif %}
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>File Comparison</h2>
+      {% if comparison.error %}
+        <p class="error">{{ comparison.error }}</p>
+      {% else %}
+        <div class="grid-2">
+          <div>
+            <h3>Original</h3>
+            <ul class="kv-list">
+              {% for key, value in comparison.original.items() %}
+                <li><span>{{ key }}</span><span>{{ value }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div>
+            <h3>Modified</h3>
+            <ul class="kv-list">
+              {% for key, value in comparison.modified.items() %}
+                <li><span>{{ key }}</span><span>{{ value }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <h3>Differences</h3>
+        {% if comparison.differences %}
+          <ul class="kv-list">
+            {% for key, value in comparison.differences.items() %}
+              <li><span>{{ key }}</span><span>{{ value }}</span></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No significant differences detected.</p>
+        {% endif %}
+      {% endif %}
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <small>Project: Image Caption Encryption &amp; Metadata Steganography Using Classical Ciphers</small>
+    </div>
+  </footer>
+</body>
+</html>
